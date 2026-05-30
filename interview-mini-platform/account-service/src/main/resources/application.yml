@@ -1,0 +1,63 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: account-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/interview_demo?options=-c%20TimeZone=UTC
+    username: app
+    password: app
+  jpa:
+    hibernate:
+      ddl-auto: validate # Flyway controls schema; Hibernate should not auto-modify it.
+  flyway:
+    enabled: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+  rabbitmq:
+    host: localhost
+    port: 5672
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8085/realms/interview/protocol/openid-connect/certs # Keeps local startup independent of live issuer discovery
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      payment:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+  retry:
+    instances:
+      payment:
+        max-attempts: 3
+        wait-duration: 200ms
+
+app:
+  aws:
+    endpoint: http://localhost:4566
+    region: us-east-1
+    sqs:
+      queue-url: http://localhost:4566/000000000000/interview-queue

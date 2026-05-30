@@ -1,0 +1,33 @@
+package com.interview.platform.account.logging;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
+import org.slf4j.MDC;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+@Component
+public class CorrelationIdFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
+        // Reuse incoming id from gateway, or create one if request bypasses gateway.
+        String correlationId = Optional.ofNullable(request.getHeader("X-Correlation-Id"))
+            .orElse(UUID.randomUUID().toString());
+
+        MDC.put("correlationId", correlationId); // Adds correlation id to every log line in request scope.
+        response.setHeader("X-Correlation-Id", correlationId);
+
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            MDC.clear(); // Important cleanup to avoid leaking MDC between threads.
+        }
+    }
+}

@@ -1,0 +1,47 @@
+# Topic Coverage Matrix
+
+This file maps each requested topic to concrete implementation in this mini project.
+
+- Authentication + Authorization:
+  - `account-service/src/main/java/com/interview/platform/account/config/SecurityConfig.java`
+- Distributed login/session:
+  - `account-service/src/main/java/com/interview/platform/account/auth/RefreshTokenSessionService.java`
+- API Gateway:
+  - `gateway/src/main/resources/application.yml`
+  - `gateway/src/main/java/com/interview/platform/gateway/CorrelationIdFilter.java`
+- Discovery server:
+  - `discovery-server/src/main/java/com/interview/platform/discovery/DiscoveryServerApplication.java`
+- Spring Cloud:
+  - Gateway + Eureka client/server modules
+- Kafka:
+  - `OrderEventProducer`, `OrderEventConsumer`, `TransferAnalyticsProcessor`
+- RabbitMQ:
+  - `RabbitTaskPublisher`
+- Redis:
+  - `AccountQueryService`, `RefreshTokenSessionService`
+- AWS SQS:
+  - `SqsTaskPublisher`
+- AWS S3:
+  - `S3PresignService`
+- AWS Lambda:
+  - `lambda/process-events/index.js`
+- AWS EC2:
+  - `infra/ec2-userdata.sh`
+- Logging (distributed):
+  - Correlation id filters in gateway and account-service
+- Circuit breaker:
+  - `resilience/PaymentClient`
+- Data processing:
+  - `processing/TransferAnalyticsProcessor`
+- API versioning:
+  - `AccountControllerV1`, `AccountControllerV2`
+- Database versioning:
+  - Flyway scripts in `db/migration`
+- Sensitive data local/cloud:
+  - `SecretManagerService` + env-based config in `application.yml`
+- Load balancing:
+  - `lb://account-service` route + Kubernetes service abstraction
+- Scalability:
+  - `k8s/account-service-hpa.yaml`
+- DevOps:
+  - `.github/workflows/ci.yml`
